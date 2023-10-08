@@ -29,3 +29,8 @@ hs_err_pid*
 
 .DS_Store
 /temp/
+
+# Eclipse
+*.project
+*.classpath
+*.settings/
