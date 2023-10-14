@@ -40,26 +40,32 @@ public class WeekendDiscountTimeSlotValidator {
         // make sure a weekend number has been set already
         if (this.weekendNumber == null) {
             throw new IllegalWeekendNumberException("WeekendDiscountTimeSlotValidator has not been initialized correctly!");
-        } else {
+        } 
+        else {
 
             if (WEEKEND_DAYS.contains(now.getDayOfWeek())) {
-                Integer firstSaturdayInMonth = null;
+                // find first Saturday in month
+            	Integer firstSaturdayInMonth = null;
                 for (int i = 1; i < now.getMonth().maxLength() && firstSaturdayInMonth == null; i++) {
-                    if (LocalDate.of(now.getYear(), now.getMonth(), i).getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-                        firstSaturdayInMonth = i;
-                    }
+                	DayOfWeek nowWeekDay = LocalDate.of(now.getYear(), now.getMonth(), i).getDayOfWeek();
+                    if (nowWeekDay.equals(DayOfWeek.SATURDAY)) {
+                    	firstSaturdayInMonth = i;}
+                    else if (nowWeekDay.equals(DayOfWeek.SUNDAY)) {
+                    	firstSaturdayInMonth = i-1;} // firstSaturdayInMonth=0
                 }
-                LocalDate beginningOfDiscountWeekend = LocalDate.of(
-                        now.getYear(),
-                        now.getMonth(),
-                        firstSaturdayInMonth + (weekendNumber - 1) * NOF_WEEKDAYS);
-                if (now.getDayOfMonth() >= beginningOfDiscountWeekend.getDayOfMonth() ||
-                        now.getDayOfMonth() >= beginningOfDiscountWeekend.getDayOfMonth() + 1) {
+                
+                // define discount period
+                int saturdayOfChosenWeekend = firstSaturdayInMonth + (weekendNumber - 1) * NOF_WEEKDAYS;
+                int startDayNumber = saturdayOfChosenWeekend == 0 ? 1 : saturdayOfChosenWeekend;
+                int endDayNumber = startDayNumber + 1 > now.getMonth().maxLength() ? startDayNumber : startDayNumber + 1;
+                LocalDateTime beginningOfDiscountWeekend = LocalDateTime.of(now.getYear(), now.getMonth(), startDayNumber, 00, 00);
+                LocalDateTime endOfDiscountWeekend = LocalDateTime.of(now.getYear(), now.getMonth(), endDayNumber, 23, 59);
+                
+                if (!now.isBefore(beginningOfDiscountWeekend) && !now.isAfter(endOfDiscountWeekend))
                     return true;
                 }
-            }
-            return false;
         }
+        return false;
     }
 
 }
