@@ -11,6 +11,7 @@ public class HotSaucesPage extends Page {
     private static final Log LOG = LogFactory.getLog(HotSaucesPage.class);
 
     private By habaneroHotSauceLocator = By.xpath("//a[contains(@href,'day_of_the_dead_habanero_hot_sauce')]");
+    private By firstNotOutOfStockLocator = By.cssSelector(".card-product:not(:has(.is-out-of-stock))");
 
     public HotSaucesPage(WebDriver driver) {
         super(driver);
@@ -25,9 +26,9 @@ public class HotSaucesPage extends Page {
         return PageFactory.initElements(driver, SauceDetailPage.class);
 
     }
+
+    public SauceDetailPage selectFirstNotOutOfStockSauce() {
+        driver.findElement(firstNotOutOfStockLocator).click();
+        return PageFactory.initElements(driver, SauceDetailPage.class);
+    }
 }
-
-
-
-
-

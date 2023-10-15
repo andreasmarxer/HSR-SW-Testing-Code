@@ -10,7 +10,6 @@ public class CartPage extends Page {
 
     private static final Log LOG = LogFactory.getLog(HomePage.class);
 
-
     @FindBy(id = "cart_products")
     private WebElement productsInCartTable;
 
@@ -22,4 +21,5 @@ public class CartPage extends Page {
         }
         LOG.debug("CartPage created successfully");
     }
+
 }
