@@ -7,23 +7,21 @@
  */
 package ch.hsr.testing.systemtest.weekenddiscount.badexample;
 
-import ch.hsr.testing.systemtest.weekenddiscount.Constants;
-import ch.hsr.testing.systemtest.weekenddiscount.util.DBUtil;
-import ch.hsr.testing.systemtest.weekenddiscount.util.DateFactory;
+import static org.hamcrest.core.Is.is;
+
+import java.util.List;
+
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.core.Is.is;
+import ch.hsr.testing.systemtest.weekenddiscount.Constants;
+import ch.hsr.testing.systemtest.weekenddiscount.util.DBUtil;
+import ch.hsr.testing.systemtest.weekenddiscount.util.DateFactory;
+import ch.hsr.testing.systemtest.weekenddiscount.util.DriverFactory;
 
 /**
  * The Class WeekendDiscountTestWithoutPageObjects. This is the bad example how
@@ -36,14 +34,7 @@ public class WeekendDiscountTestWithoutPageObjects implements Constants {
 
 	@BeforeEach
 	public void setup() {
-
-		System.setProperty("webdriver.chrome.driver", getChromeDriverPath());
-		ChromeOptions options = new ChromeOptions();
-		options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-		driver = new ChromeDriver(options);
-
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
+		driver = DriverFactory.createDriver(getChromeDriverPath());
 		DBUtil.setTestTime(DateFactory.createDate(2019, 6, 23, 0, 0, 0));
 	}
 

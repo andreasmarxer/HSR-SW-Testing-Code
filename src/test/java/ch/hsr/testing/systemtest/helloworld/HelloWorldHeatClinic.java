@@ -7,7 +7,6 @@
  */
 package ch.hsr.testing.systemtest.helloworld;
 
-import ch.hsr.testing.systemtest.weekenddiscount.Constants;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,11 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 
-import java.util.concurrent.TimeUnit;
+import ch.hsr.testing.systemtest.weekenddiscount.Constants;
+import ch.hsr.testing.systemtest.weekenddiscount.util.DriverFactory;
 
 /**
  * The Class HelloWorldHeatClinic. This class can be used for first experiments
@@ -33,12 +30,7 @@ public class HelloWorldHeatClinic implements Constants {
 
 	@BeforeEach
 	public void setup() {
-		System.setProperty("webdriver.chrome.driver", getChromeDriverPath());
-		ChromeOptions options = new ChromeOptions();
-		options.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-		driver = new ChromeDriver(options);
-
-		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		driver = DriverFactory.createDriver(getChromeDriverPath());
 	}
 
 	@AfterEach
@@ -51,26 +43,21 @@ public class HelloWorldHeatClinic implements Constants {
 
 		driver.get("http://localhost:8080");
 
-
 		// check if the home page is loaded
 		Assertions.assertThat(driver.getPageSource()).contains("Heat Clinic");
-
 
 		// now go to "Hot Sauces"
 		WebElement navigation = driver.findElement(By.xpath("//div[@id='left-nav']"));
 		navigation.findElement(By.partialLinkText("HOT")).click();
 		Assertions.assertThat(driver.getTitle()).contains("Hot Sauces");
 
-
 		// jump to the green ghost sauce detail page
 		WebElement greenGhostLink = driver.findElement(By.xpath("//a[@href='/hot-sauces/green_ghost']"));
 		greenGhostLink.click();
 
-
 		// and check the price of the green ghost sauce: should be $9.99
 		String price = driver.findElement(By.className("price-new")).getText();
 		Assertions.assertThat(price).isEqualTo("$9.99");
-
 
 	}
 

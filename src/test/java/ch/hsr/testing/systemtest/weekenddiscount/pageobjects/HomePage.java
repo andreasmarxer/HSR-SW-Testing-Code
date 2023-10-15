@@ -30,8 +30,6 @@ public class HomePage extends Page {
 
     public int getNofProductsShown() {
         return driver.findElements(shownProductsLocator).size();
-
     }
-
 
 }

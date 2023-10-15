@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public interface Constants {
 
     // TODO: choose your os: either linux, windows or mac
-    String OS = "mac";
+    String OS = "windows";
 
     String HOST = "localhost";
 
@@ -16,7 +16,7 @@ public interface Constants {
 
     default String getChromeDriverPath() {
         try {
-            URL res = getClass().getClassLoader().getResource("chromedriver/" + OS + "/chromedriver");
+            URL res = getClass().getClassLoader().getResource("chromedriver/" + OS + "/chromedriver.exe");
             File file = Paths.get(res.toURI()).toFile();
             return file.getAbsolutePath();
         } catch (URISyntaxException | NullPointerException e) {
@@ -26,5 +26,3 @@ public interface Constants {
     }
 
 }
-
-
