@@ -25,6 +25,8 @@ import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.CartPage;
 import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.HomePage;
 import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.HotSaucesPage;
 import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.SauceDetailPage;
+import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.pageparts.CartProductItem;
+import ch.hsr.testing.systemtest.weekenddiscount.pageobjects.pageparts.CartSummary;
 import ch.hsr.testing.systemtest.weekenddiscount.util.DBUtil;
 import ch.hsr.testing.systemtest.weekenddiscount.util.DateFactory;
 import ch.hsr.testing.systemtest.weekenddiscount.util.DriverFactory;
@@ -58,34 +60,49 @@ public class WeekendDiscountAcceptanceTests implements Constants {
     @Test
     public void testWeekendDiscountEnabled() {
 
+        // Arrange
         Date within4thWeekend = DateFactory.createDate(2018, 6, 23, 0, 0, 0);
         DBUtil.setTestTime(within4thWeekend);
 
-        // Navigate TO HotSaucePage
         HomePage homePage = HomePage.navigateTo(driver);
         HotSaucesPage hotSaucesPage = homePage.jumpToHotSauces();
 
-        // SELect First
-        // NOT Out of Stock
+        // Act
         SauceDetailPage detailPage = hotSaucesPage.selectFirstNotOutOfStockSauce();
         detailPage.buySauce();
 
-        // Navigate To cart
         CartPage cartPage = hotSaucesPage.goToCart();
-        // GET PRODUCT
+        CartSummary cartSummary = cartPage.getCartSummary();
+        CartProductItem productItem = cartPage.getProductItem(0);
 
-        // ASSERT: DISCOUNT PRESENT
-
+        // Assert
+        Assertions.assertTrue(productItem.hasDiscount());
+        Assertions.assertNotEquals(cartSummary.getTotalSavings(), 0);
+        Assertions.assertNotEquals(cartSummary.getSubtotal(), cartSummary.getEstimatedTotal());
     }
 
     @Test
     public void testWeekendDiscountDisabled() {
 
+        // Arrange
         Date after4thWeekend = DateFactory.createDate(2018, 6, 25, 0, 0, 0);
         DBUtil.setTestTime(after4thWeekend);
 
-        // TODO: Implement this
-        Assertions.fail("Implement Testcase");
+        HomePage homePage = HomePage.navigateTo(driver);
+        HotSaucesPage hotSaucesPage = homePage.jumpToHotSauces();
+
+        // Act
+        SauceDetailPage detailPage = hotSaucesPage.selectFirstNotOutOfStockSauce();
+        detailPage.buySauce();
+
+        CartPage cartPage = hotSaucesPage.goToCart();
+        CartSummary cartSummary = cartPage.getCartSummary();
+        CartProductItem productItem = cartPage.getProductItem(0);
+
+        // Assert
+        Assertions.assertFalse(productItem.hasDiscount());
+        Assertions.assertEquals(cartSummary.getTotalSavings(), 0);
+        Assertions.assertEquals(cartSummary.getSubtotal(), cartSummary.getEstimatedTotal());
 
     }
 

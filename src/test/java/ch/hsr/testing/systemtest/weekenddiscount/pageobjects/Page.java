@@ -1,6 +1,7 @@
 package ch.hsr.testing.systemtest.weekenddiscount.pageobjects;
 
-import ch.hsr.testing.systemtest.weekenddiscount.Constants;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,14 +9,14 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
+import ch.hsr.testing.systemtest.weekenddiscount.Constants;
 
 public class Page implements Constants {
 
     WebDriver driver;
 
     By logoLocator = By.xpath("//a[contains(text(),'The Heat Clinic Home')]");
-    By cartLinkLocator = By.xpath("//a[i[text()='shopping_cart']]");
+    By cartToggleLocator = By.xpath("//a[@aria-expanded][contains(@class, 'dropdown')]");
     By navigatorLocator = By.xpath("//div[@id='left-nav']");
     By openCartPageLocator = By.xpath("//a[contains(@class,'goto-full-cart')]");
     By cartBadgeLocator = By.className("cart-count-badge");
@@ -37,10 +38,13 @@ public class Page implements Constants {
     }
 
     public CartPage goToCart() {
-        driver.findElement(cartLinkLocator).click();
-        WebDriverWait wait = new WebDriverWait(driver,5);
-        wait.until(ExpectedConditions.elementToBeClickable(openCartPageLocator));
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        wait.until(ExpectedConditions.elementToBeClickable(cartToggleLocator));
+        if (driver.findElement(cartToggleLocator).getAttribute("aria-expanded").equals("false")) {
+            driver.findElement(cartToggleLocator).click();
+        }
 
+        wait.until(ExpectedConditions.elementToBeClickable(openCartPageLocator));
         WebElement fullCartButton = driver.findElement(openCartPageLocator);
         fullCartButton.click();
         return PageFactory.initElements(driver, CartPage.class);
@@ -55,6 +59,5 @@ public class Page implements Constants {
             return 0;
         }
     }
-
 
 }
